@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <header th:replace="~{fragments/base :: head2}"></header>
+    <header th:replace="~{common/main :: head}"></header>
+    <meta charset="utf-8">
+    <title>여러개 마커에 이벤트 등록하기1</title>
+    <script>
+        function search() {
+            const field = $('#field').val();
+            const query = $('#query').val();
+            const uri = '/fmh/building/search?f=' + field + '&q=' + query;
+            location.href = encodeURI(uri);
+        }   
+    </script>
+    <style>
+        #floating{
+            position: absolute;
+            top: 15%;
+            left: 3%;
+            text-align: center;
+            z-index: 9999;
+            background-color:white;
+            border: 5px solid rgb(169, 168, 238);
+        }
+
+        #map {
+			  position: relative;
+        width: 100vw;
+        height: 90vh;
+			  object-fit: cover;
+			  }
+    </style>
+</head>
+<body>
+    <div th:insert="~{common/main :: top}"></div>
+    <div id="floating">
+        <span style="width: 20%;">
+            <select class="form-control" id="field">
+                <option value="bname" ${field eq 'bname' ? 'selected' : ''}>이름</option>
+                <option value="addressroad" ${field eq 'addressroad' ? 'selected' : ''}>도로명주소</option>
+            </select>
+        </span>
+        <span style="width: 70%;" th:unless="${query}">
+            <input class="form-control" type="text" id="query" placeholder="검색할 내용">
+        </span>
+        <span style="width: 70%;" th:if="${query}">
+            <input class="form-control" type="text" id="query" th:value="${query}">
+        </span>
+        <span style="width: 10%;">
+            <button class="btn btn-outline-primary" onclick="search()">검색</button>
+        </span>
+         <div th:each="building: ${buildingList}">
+            <!-- [[${building.bname}]], [[${building.location}]], [[${{building.number}}]] -->
+        </div>
+    </div>
+
+    <div>
+    <aside th:replace="~{fragments/base :: aside(bL=${buildingList}, aLa=${avgLat}, aLo=${avgLon}, f=${field}, q=${query})}"></aside> 
+    </div>
+</body>
+</html>
